@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const ResponsivePage(),
     );
   }
 }
@@ -85,50 +85,40 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class ResponsivePage extends StatelessWidget {
+  const ResponsivePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraits) {
+        if (constraits.maxWidth < 600) {
+          return ListView(
+            children: _generateContainers(),
+          );
+        } else if (constraits.maxWidth < 900) {
+          return GridView.count(
+            crossAxisCount: 2,
+            children: _generateContainers(),
+          );
+        } else {
+          return GridView.count(
+            crossAxisCount: 6,
+            children: _generateContainers(),
+          );
+        }
+      },
     );
   }
 }
+
+List<Widget> _generateContainers() {
+  return List<Widget>.generate(20, (index) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      color: Colors.blueGrey,
+      height: 200,
+    );
+  });
+}
+
